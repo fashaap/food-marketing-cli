@@ -344,7 +344,7 @@ public class Main {
         System.out.println("--------------------------------------------------------------------");
 
 
-        // ================= LOOP PEMBAYARAN =================
+
         while (true) {
             System.out.println("Ketik 0 untuk kembali");
             System.out.print("\nMasukkan nominal uang : ");
@@ -363,10 +363,9 @@ public class Main {
             System.out.println("Kembalian : Rp " + kembalian);
             System.out.println("Pembayaran berhasil. Terima kasih.");
 
-            // ================= SET STATUS PESANAN =================
-            lacakPesanan = true;
 
-            // reset pesanan (opsional)
+            lacakPesanan = true;
+            //kembalikan ke awal
             jumlahPesanan = 0;
             totalBayar = 0;
 
@@ -386,12 +385,10 @@ public class Main {
             int n = DaftarMenu.dataMakanan.length;
             int[] idx = new int[n];
 
-            // Inisialisasi index
             for (int i = 0; i < n; i++) {
                 idx[i] = i;
             }
 
-            // ========== SORTING ==========
             if (sortMode != 0) {
                 for (int i = 0; i < n - 1; i++) {
                     for (int j = 0; j < n - i - 1; j++) {
@@ -412,7 +409,7 @@ public class Main {
                 }
             }
 
-            // ========== TAMPIL MENU ==========
+
             int no = 1;
             System.out.println();
             System.out.println("DAFTAR MENU : ");
@@ -438,7 +435,6 @@ public class Main {
 
             System.out.println("+-----+----------------------+-----------------+---------+-------+");
 
-            // ========== INPUT MENU ==========
             System.out.println("Ketik 0 untuk membatalkan");
             System.out.print("Pilih No Menu : ");
             selectMenu = input.nextInt();
@@ -475,7 +471,6 @@ public class Main {
 
             dataPesanan(menuIndex, jumlah);
 
-            // ========== ULANG ==========
             System.out.println("\nAda lagi?");
             System.out.println("1. Pesan lagi");
             System.out.println("0. Kembali");
