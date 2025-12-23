@@ -7,7 +7,6 @@ public class Main {
     static Scanner input = new Scanner(System.in);
     static String adminPassword = "admin123";
     static int kesempatanLogin = 4;
-    static boolean isRunning = true;
 
     static String[][] dataPesanan = new String[100][4];
     static int jumlahPesanan = 0;
@@ -41,7 +40,7 @@ public class Main {
 
 
     public static boolean loginAdmin() {
-        kesempatanLogin = 4; // Reset kesempatan saat mulai login
+        kesempatanLogin = 4; // Reset kesempatan
 
         while (kesempatanLogin > 0) {
             System.out.print("Masukan password admin : ");
@@ -53,7 +52,7 @@ public class Main {
                 kesempatanLogin = 0;
             }else {
                 kesempatanLogin--;
-                System.out.println("Password salah! Sisa kesempatan");
+                System.out.println("Password salah! Sisa kesempatan " + kesempatanLogin);
             }
         }
 
@@ -62,7 +61,7 @@ public class Main {
 
     public static void HalamanPilihRole(){
 
-        while(isRunning){
+        while(true){
             System.out.println();
             System.out.println("=====LOGIN=======");
             System.out.println("1. ADMIN");
@@ -71,7 +70,7 @@ public class Main {
 
             System.out.print("Pilih akun : ");
 
-            try{ // try catch adalah handle erorr
+            try{
                 int valid = input.nextInt();
 
                 if(valid == 1){
@@ -84,7 +83,7 @@ public class Main {
                     }
                 }else if(valid == 2){
                     System.out.println("Masuk sebagai Pelanggan");
-                    MenuUser();
+                    LihatMenuUser();
 
                 }else{
                     System.out.println("Nomor tidak valid");
@@ -99,84 +98,96 @@ public class Main {
 
     public static void MenuAdmin(){
 
-        System.out.println("\n===================================");
-        System.out.println(" PENGATURAN SISTEM ");
-        System.out.println("===================================");
-        System.out.println("1. EDIT STOK ITEM");
-        System.out.println("0. Keluar");
-        System.out.println("===================================");
+        while(true) {
+            System.out.println("\n===================================");
+            System.out.println(" PENGATURAN SISTEM ");
+            System.out.println("===================================");
+            System.out.println("1. EDIT STOK ITEM");
+            System.out.println("0. Keluar");
+            System.out.println("===================================");
 
-        while(isRunning) {
             System.out.print("Pilih : ");
             int validasi = input.nextInt();
+
             if(validasi == 1){
                 EditStok();
-                isRunning = false;
-            }else if(validasi == 0){
-                HalamanPilihRole(); //Kembali ke menu utama
+            } else if(validasi == 0){
+                return;
+            } else {
+                System.out.println("Pilihan tidak valid");
             }
         }
     }
 
-    public static void EditStok(){
-        System.out.println("EDIT STOK");
-    }
 
-    public static void MenuUser(){
-        System.out.println("\n===================================");
-        System.out.println(" SELAMAT DATANG DI RESTORAN KITA");
-        System.out.println("===================================");
-        System.out.println("1. Lihat & Urutkan Menu");
+    public static void EditStok() {
 
-        if(totalBayar > 0){
-            System.out.println("2. Lihat Pesanan");
-        }
+        while (true) {
+            int n = DaftarMenu.dataMakanan.length;
 
-        System.out.println("0. Keluar");
-        System.out.println("===================================");
+            System.out.println();
+            System.out.println("EDIT STOK MENU :");
+            System.out.println("+-----+----------------------+-----------------+---------+-------+");
+            System.out.printf("| %-3s | %-20s | %-15s | %-7s | %-5s |%n",
+                    "No", "Nama Menu", "Kategori", "Harga", "Stok");
+            System.out.println("+-----+----------------------+-----------------+---------+-------+");
 
-        while(isRunning){
-            System.out.print("Pilih : ");
-
-            try {
-
-                int validasi = input.nextInt();
-
-                switch(validasi){
-                    case 1:
-                        LihatMenuUser();
-                        isRunning = false;
-                        break;
-                    case 3:
-                        System.out.println("Masuk ke halaman Lihat Pesanan");
-                        isRunning = false;
-                        break;
-                    case 0:
-                        HalamanPilihRole();
-                    default :
-                        System.out.println("Nomor tidak valid");
-                }
-            }catch(InputMismatchException e){
-                System.out.println("Input harus berupa angka!");
-                input.nextLine();
+            for (int i = 0; i < n; i++) {
+                System.out.printf(
+                        "| %-3d | %-20s | %-15s | %-7s | %-5s |%n",
+                        i + 1,
+                        DaftarMenu.dataMakanan[i][0],
+                        DaftarMenu.dataMakanan[i][1],
+                        DaftarMenu.dataMakanan[i][3],
+                        DaftarMenu.dataMakanan[i][4]
+                );
             }
 
+            System.out.println("+-----+----------------------+-----------------+---------+-------+");
+
+            System.out.println("Ketik 0 untuk kembali");
+            System.out.print("Pilih menu yang ingin ditambah stok: ");
+            int pilih = input.nextInt();
+
+            if (pilih == 0) {
+                break;
+            }
+
+            if (pilih < 1 || pilih > n) {
+                System.out.println("Menu tidak valid.");
+                continue;
+            }
+
+            int menuIndex = pilih - 1;
+            int stokSekarang = Integer.parseInt(DaftarMenu.dataMakanan[menuIndex][4]);
+
+            System.out.println("Stok saat ini : " + stokSekarang);
+            System.out.print("Masukkan jumlah stok tambahan: ");
+            int tambah = input.nextInt();
+
+            if (tambah <= 0) {
+                System.out.println("Jumlah stok harus lebih dari 0.");
+                continue;
+            }
+
+            stokSekarang += tambah;
+            DaftarMenu.dataMakanan[menuIndex][4] = String.valueOf(stokSekarang);
+
+            System.out.println("Stok berhasil ditambahkan.");
+            System.out.println("Stok baru : " + stokSekarang);
         }
     }
+
+
 
     public static void dataPesanan(int indexMenu, int jumlah) {
 
         int stok = Integer.parseInt(DaftarMenu.dataMakanan[indexMenu][4]);
         int harga = Integer.parseInt(DaftarMenu.dataMakanan[indexMenu][3]);
 
-        if (jumlah > stok) {
-            System.out.println("Stok tidak mencukupi!");
-            return;
-        }
-
         int subtotal = harga * jumlah;
 
-        // ================= SIMPAN KE ARRAY PESANAN BARU =================
+        // menyimpan ke array
         dataPesanan[jumlahPesanan][0] = DaftarMenu.dataMakanan[indexMenu][0]; // nama
         dataPesanan[jumlahPesanan][1] = String.valueOf(harga);                // harga
         dataPesanan[jumlahPesanan][2] = String.valueOf(jumlah);               // jumlah
@@ -185,9 +196,13 @@ public class Main {
         jumlahPesanan++;
         totalBayar += subtotal;
 
-        // ================= KURANGI STOK MASTER =================
+        // mengurangi stok
         stok -= jumlah;
-        DaftarMenu.dataMakanan[indexMenu][4] = String.valueOf(stok);
+        if(stok < 0){
+            stok = 0;
+        }
+        DaftarMenu.dataMakanan[indexMenu ][4] = String.valueOf(stok);
+        DaftarMenu.dataMakanan[indexMenu ][4] = String.valueOf(stok);
     }
 
     public static void EditPesanan() {
@@ -201,7 +216,7 @@ public class Main {
             if (jumlahPesanan == 0) {
                 System.out.println("|                Belum ada pesanan.                           |");
                 System.out.println("---------------------------------------------------------------------");
-                System.out.print("Tekan 0 untuk kembali: ");
+                System.out.print("Ketik 0 untuk kembali: ");
                 input.nextInt();
                 return;
             }
@@ -218,8 +233,8 @@ public class Main {
             }
 
             System.out.println("--------------------------------------------------------------------");
-
-            System.out.print("Masukkan nomor pesanan yang ingin diedit (0 untuk kembali): ");
+            System.out.println("Ketik 0 untuk kembali");
+            System.out.print("Masukkan nomor pesanan yang ingin diedit: ");
             int noInput = input.nextInt();
 
             if (noInput == 0) {
@@ -262,20 +277,35 @@ public class Main {
 
         if (validasiHapus == 'Y' || validasiHapus == 'y') {
 
-            // Reset data array pesanan
-            dataPesanan = new String[100][4];
+            for (int i = 0; i < jumlahPesanan; i++) {
 
-            // Reset variabel supaya tidak muncul lagi
+                String namaMenu = dataPesanan[i][0];
+                int jumlahDipesan = Integer.parseInt(dataPesanan[i][2]);
+
+                for (int j = 0; j < DaftarMenu.dataMakanan.length; j++) {
+                    if (DaftarMenu.dataMakanan[j][0].equals(namaMenu)) {
+
+                        int stokSekarang = Integer.parseInt(DaftarMenu.dataMakanan[j][4]); //stok
+                        stokSekarang += jumlahDipesan;
+
+                        DaftarMenu.dataMakanan[j][4] = String.valueOf(stokSekarang);
+                        break;
+                    }
+                }
+            }
+
+            dataPesanan = new String[100][4];
             jumlahPesanan = 0;
             totalBayar = 0;
             lacakPesanan = false;
 
-            System.out.println("Pesanan berhasil dihapus dan direset.");
+            System.out.println("Pesanan berhasil dihapus dan stok dikembalikan.");
 
         } else {
             System.out.println("Penghapusan pesanan dibatalkan.");
         }
     }
+
 
     public static void tampilPesanan() {
         System.out.println();
@@ -288,7 +318,7 @@ public class Main {
         if (jumlahPesanan == 0) {
             System.out.println("|                Belum ada pesanan.                           |");
             System.out.println("---------------------------------------------------------------------");
-            System.out.print("Tekan 0 untuk kembali: ");
+            System.out.print("Ketik 0 untuk kembali: ");
             input.nextInt();
             return;
         }
@@ -316,7 +346,8 @@ public class Main {
 
         // ================= LOOP PEMBAYARAN =================
         while (true) {
-            System.out.print("\nMasukkan nominal uang (0 untuk kembali): ");
+            System.out.println("Ketik 0 untuk kembali");
+            System.out.print("\nMasukkan nominal uang : ");
             int uang = input.nextInt();
 
             if (uang == 0) {
@@ -348,7 +379,7 @@ public class Main {
     public static void SortingKategori(int sortMode) {
 
         boolean kembali = false;
-
+        int selectMenu;
         do {
             int[] indexMap = new int[50];
 
@@ -410,7 +441,7 @@ public class Main {
             // ========== INPUT MENU ==========
             System.out.println("Ketik 0 untuk membatalkan");
             System.out.print("Pilih No Menu : ");
-            int selectMenu = input.nextInt();
+            selectMenu = input.nextInt();
 
             if (selectMenu == 0) {
                 return;
@@ -429,7 +460,20 @@ public class Main {
                 continue;
             }
 
-            dataPesanan(indexMap[selectMenu], jumlah);
+            int menuIndex = indexMap[selectMenu - 1];
+            int stokMenu = Integer.parseInt(DaftarMenu.dataMakanan[menuIndex][4]);
+
+            if (stokMenu == 0) {
+                System.out.println("Stok makanan habis.");
+                continue;
+            }
+
+            if (jumlah > stokMenu) {
+                System.out.println("Stok makanan hanya ada " + stokMenu);
+                continue;
+            }
+
+            dataPesanan(menuIndex, jumlah);
 
             // ========== ULANG ==========
             System.out.println("\nAda lagi?");
@@ -445,14 +489,12 @@ public class Main {
         } while (!kembali);
     }
 
-
-
     public static void LihatMenuUser() {
         boolean kembali = false;
 
         do {
             System.out.println("\n===================================");
-            System.out.println("        SILAHKAN PILIH MENU     ");
+            System.out.println(" SELAMAT DATANG DI RESTORAN KITA");
             System.out.println("===================================");
             if(!lacakPesanan){
                 System.out.println("1. Menu Termahal & Pesan");
@@ -467,7 +509,7 @@ public class Main {
             if(lacakPesanan){
                 System.out.println("1. Lacak Pesanan");
             }
-            System.out.println("0. Kembali");
+            System.out.println("0. Keluar dari pengguna");
             System.out.println("===================================");
             System.out.print("Pilih : ");
 
@@ -481,7 +523,6 @@ public class Main {
                         SortingKategori(valid);
                     }
                         break;
-
                 case 2:
                     SortingKategori(valid);
                     break;
@@ -531,12 +572,13 @@ public class Main {
 
         } while (!kembali);
 
-        MenuUser();
+        HalamanPilihRole();
     }
 
     public static void main(String[] args) {
 
         //halaman pertama kali di akses
-        HalamanPilihRole();
+        //HalamanPilihRole();
+        LihatMenuUser();
     }
 }
